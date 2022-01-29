@@ -1,36 +1,8 @@
 import { Box, Button, Text, TextField, Image } from "@skynexui/components";
+import React from "react";
+import { useRouter} from 'next/router'
 import appConfig from "../config.json";
 
-function GlobalStyle() {
-  return (
-    <style global jsx>{`
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        list-style: none;
-      }
-      body {
-        font-family: "Open Sans", sans-serif;
-      }
-      /* App fit Height */
-      html,
-      body,
-      #__next {
-        min-height: 100vh;
-        display: flex;
-        flex: 1;
-      }
-      #__next {
-        flex: 1;
-      }
-      #__next > * {
-        flex: 1;
-      }
-      /* ./App fit Height */
-    `}</style>
-  );
-}
 
 function Title(props) {
   const Tag = props.tag || "h1";
@@ -60,19 +32,20 @@ function Title(props) {
 // export default HomePage;
 
 export default function PaginaInicial() {
-  const username = "eduardodgdebem";
+  const [username, setUsername] = React.useState('')
+  const roteamento = useRouter()
+
+  // const username = "eduardodgdebem";
 
   return (
     <>
-      <GlobalStyle />
       <Box
         styleSheet={{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: appConfig.theme.colors.primary[500],
           backgroundImage:
-            "url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)",
+            "url(https://wallpapercave.com/wp/wp4676576.jpg)",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
           backgroundBlendMode: "multiply",
@@ -93,12 +66,19 @@ export default function PaginaInicial() {
             padding: "32px",
             margin: "16px",
             boxShadow: "0 2px 10px 0 rgb(0 0 0 / 20%)",
-            backgroundColor: appConfig.theme.colors.neutrals[700],
+            'backdrop-filter': "blur(8px)",
+            // backgroundColor: appConfig.theme.colors.neutrals[700],
           }}
         >
           {/* Formulário */}
           <Box
             as="form"
+            onSubmit={(infosDoEvent) => {
+              infosDoEvent.preventDefault()
+              console.log('Alguem submeteu')
+              roteamento.push('/chat')
+              // window.location.href = "/chat"
+            }}
             styleSheet={{
               display: "flex",
               flexDirection: "column",
@@ -122,6 +102,10 @@ export default function PaginaInicial() {
 
             <TextField
               fullWidth
+              value={username}
+              onChange={(event) => {
+                setUsername(event.target.value)
+              }}
               textFieldColors={{
                 neutral: {
                   textColor: appConfig.theme.colors.neutrals[200],
@@ -161,14 +145,18 @@ export default function PaginaInicial() {
               minHeight: "240px",
             }}
           >
-            <Image
-              styleSheet={{
-                borderRadius: "50%",
-                marginBottom: "16px",
-              }}
-              src={`https://github.com/${username}.png`}
-            />
-            <Text
+            { username.length >= 2  &&
+              <Image
+                styleSheet={{
+                  borderRadius: "50%",
+                  marginBottom: "16px",
+                }}
+                src={`https://github.com/${username}.png`}
+              /> 
+            }
+            {
+              username.length >= 2  &&
+              <Text
               variant="body4"
               styleSheet={{
                 color: appConfig.theme.colors.neutrals[200],
@@ -176,9 +164,10 @@ export default function PaginaInicial() {
                 padding: "3px 10px",
                 borderRadius: "1000px",
               }}
-            >
-              {username}
-            </Text>
+              >
+                {username}
+              </Text>
+            }
           </Box>
           {/* Photo Area */}
         </Box>
